@@ -17,50 +17,42 @@ class App extends React.Component {
     toys: [],
   };
 
-  componentDidMount() {
-    fetch(toysURL)
-      .then((res) => res.json())
-      .then((json) => this.handleToys(json));
+  doFetch(data, method = 'GET', id = null) {
+    const url = id !== null ? `${toysURL}/${id}` : toysURL;
+    const body = JSON.stringify(data);
+    return fetch(url, {
+      body,
+      headers,
+      method,
+    }).then((res) => res.json());
   }
 
-  handleToys(toys) {
-    this.setState({ toys });
+  componentDidMount() {
+    this.doFetch().then((toys) => this.setState({ toys }));
   }
 
   addToy = (toy) => {
     toy.likes = 1;
-    fetch(toysURL, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(toy),
-    })
-      .then((res) => res.json())
-      .then((toy) => this.setState({ toys: [toy, ...this.state.toys] }));
+    this.doFetch(toy, 'POST').then((toy) =>
+      this.setState({ toys: [toy, ...this.state.toys] })
+    );
   };
 
   addLike = (toy) => {
-    console.log('adding like for', toy);
-    const toys = this.state.toys.map((t) => {
-      const newToy = { ...t };
-      if (newToy.id === toy.id) {
-        newToy.likes += 1;
-      }
-      return newToy;
+    this.doFetch({ likes: toy.likes + 1 }, 'PATCH', toy.id).then((newToy) => {
+      const toys = this.state.toys.map((t) => (t.id === toy.id ? newToy : t));
+      this.setState({ toys });
     });
-    this.setState({ toys });
   };
 
   deleteToy = (toy) => {
-    console.log('deleting', toy);
-    const toys = this.state.toys.filter((t) => toy.id !== t.id);
-    this.setState({ toys });
+    this.doFetch({}, 'DELETE', toy.id).then(() =>
+      this.setState({ toys: this.state.toys.filter((t) => toy.id !== t.id) })
+    );
   };
 
   handleClick = () => {
-    let newBoolean = !this.state.display;
-    this.setState({
-      display: newBoolean,
-    });
+    this.setState({ display: !this.state.display });
   };
 
   render() {

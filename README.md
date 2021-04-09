@@ -1,5 +1,9 @@
 # Toy Tales
 
+Video walkthrough: https://youtu.be/p_bPNq4Tq_Y
+
+----
+
 You've got a friend in need! Again!
 Andy has misplaced of his toys (again) and need your help to organize them.
 
