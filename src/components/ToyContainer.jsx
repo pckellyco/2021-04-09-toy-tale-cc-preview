@@ -4,14 +4,7 @@ import ToyCard from './ToyCard';
 const ToyContainer = ({ toys, addLike, deleteToy }) => {
   return (
     <div id="toy-collection">
-      {toys.map((toy) => (
-        <ToyCard
-          toy={toy}
-          key={toy.id}
-          addLike={addLike}
-          deleteToy={deleteToy}
-        />
-      ))}
+    
     </div>
   );
 };
